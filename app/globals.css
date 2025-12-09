@@ -1,9 +1,27 @@
 @import "tailwindcss";
 
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-marcellus: 'Marcellus', serif;
+  --font-pt-serif: 'PT Serif', serif;
 }
+
+.font-marcellus {
+  font-family: var(--font-marcellus);
+}
+
+.font-pt-serif {
+  font-family: var(--font-pt-serif);
+}
+
+.text-outline-black {
+  text-shadow: 0 0 16px black;
+} 
+
+html { scroll-behavior: smooth; }
+
 
 @theme inline {
   --color-background: var(--background);

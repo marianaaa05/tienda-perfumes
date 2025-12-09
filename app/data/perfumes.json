@@ -1,0 +1,21 @@
+[
+  { "id": 1, "nombre": "A la vida - mujer", "precio": 350000, "imagen": "/products/A_la_vida_mujer.jpeg" },
+  { "id": 2, "nombre": "Cielo rosa - mujer", "precio": 420000, "imagen": "/products/Cielo_rosa_mujer.jpeg" },
+  { "id": 3, "nombre": "Gaia - mujer", "precio": 280000, "imagen": "/products/Gaia_mujer.jpeg" },
+  { "id": 4, "nombre": "Icono - mujer", "precio": 460000, "imagen": "/products/Icono_mujer.jpeg" },
+  { "id": 5, "nombre": "Osadia - mujer", "precio": 390000, "imagen": "/products/Osadia_mujer.jpeg" },
+  { "id": 6, "nombre": "Pasion - mujer", "precio": 410000, "imagen": "/products/Pasion_mujer.jpeg" },
+  { "id": 7, "nombre": "Temptation - mujer", "precio": 370000, "imagen": "/products/Temptation_mujer.jpeg" },
+  { "id": 8, "nombre": "Temptation mystic - mujer", "precio": 430000, "imagen": "/products/Temptation_mystic_mujer.jpeg" },
+  { "id": 9, "nombre": "Xiss - mujer", "precio": 400000, "imagen": "/products/Xiss_mujer.jpeg" },
+  { "id": 10, "nombre": "Arom - hombre", "precio": 350000, "imagen": "/products/Arom_hombre.jpeg" },
+  { "id": 11, "nombre": "Dendur - hombre", "precio": 350000, "imagen": "/products/Dendur_hombre.jpeg" },
+  { "id": 12, "nombre": "Jaque - hombre", "precio": 420000, "imagen": "/products/Jaque_hombre.jpeg" },
+  { "id": 13, "nombre": "Musk - hombre", "precio": 280000, "imagen": "/products/Musk_hombre.jpeg" },
+  { "id": 14, "nombre": "Ohm - hombre", "precio": 460000, "imagen": "/products/Ohm_hombre.jpeg" },
+  { "id": 15, "nombre": "Selecto - hombre", "precio": 390000, "imagen": "/products/Selecto_hombre.jpeg" },
+  { "id": 16, "nombre": "Solo elixir - hombre", "precio": 410000, "imagen": "/products/Solo_elixir_hombre.jpeg" },
+  { "id": 17, "nombre": "Solo - hombre", "precio": 370000, "imagen": "/products/Solo_hombre.jpeg" },
+  { "id": 18, "nombre": "Xool - hombre", "precio": 430000, "imagen": "/products/Xool_hombre.jpeg" },
+  { "id": 19, "nombre": "Zentro - hombre", "precio": 400000, "imagen": "/products/Zentro_hombre.jpeg" }
+]
