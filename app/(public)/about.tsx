@@ -10,11 +10,11 @@ export default function About() {
           </h2>
           <div className="flex flex-col md:flex-row items-center justify-center gap-12 mt-12 max-w-5xl px-6">
             <Image
-              src="/about.jpg"
+              src="/about.png"
               alt="Perfumería"
               width={500}
               height={500}
-              className="shadow-lg object-cover"
+              className=""
             />
 
             <div className="flex flex-col max-w-md text-left">

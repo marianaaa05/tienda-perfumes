@@ -162,8 +162,8 @@ const canAddMore = (item: Product) => {
 
 
 return (
-  <div className="bg-[#ECE4DA] min-h-screen flex flex-col items-center mt-56">
-    <h2 className="text-4xl font-marcellus mt-12 text-[#36302A]">Nuestros productos</h2>
+  <div className="bg-[#ECE4DA] min-h-screen flex flex-col items-center">
+    <h2 className="text-4xl font-marcellus mt-12 text-[#36302A]">Nuestros perfumes</h2>
 
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-12 w-full max-w-6xl px-6">
       {filteredProducts.map((item) => (
