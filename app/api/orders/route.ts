@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 type CartItem = {
@@ -77,8 +78,8 @@ export async function POST(req: Request) {
       );
     }
 
-      // 👉 TODO ESTO VA DENTRO DE LA TRANSACCIÓN
-const result = await prisma.$transaction(async (tx) => {
+const result = await prisma.$transaction(
+  async (tx: Prisma.TransactionClient) => {
   // Productos reales desde BD
   const products = await tx.product.findMany({
     where: {
@@ -143,7 +144,7 @@ const result = await prisma.$transaction(async (tx) => {
     })),
   });
 
-  // 🔥 REDUCIR STOCK (CLAVE)
+  // REDUCIR STOCK 
   for (const item of itemsData) {
     await tx.product.update({
       where: { id: item.productId },
