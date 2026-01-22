@@ -9,6 +9,7 @@ export type ProductType = {
   name: string;
   description?: string | null;
   brand: "NATURA" | "YANBAL";
+  costPrice?: number | null;
   price: number;
   imageUrl: string;
   gender?: "HOMBRE" | "MUJER" | "UNISEX" | null;
@@ -73,7 +74,8 @@ export default function ProductsPage() {
             <th className="p-2">Nombre</th>
             <th className="p-2">Descripción</th>
             <th className="p-2">Marca</th>
-            <th className="p-2">Precio</th>
+            <th className="p-2">Costo</th>
+            <th className="p-2">Precio venta</th>
             <th className="p-2">Imagen</th>
             <th className="p-2">Género</th>
             <th className="p-2">Stock</th>
@@ -84,9 +86,10 @@ export default function ProductsPage() {
         <tbody>
           {products.map((p) => (
             <tr key={p.id} className="border-t text-[#36302A] text-xl font-pt-serif">
-              <td className="p-2 text-center">{p.name}</td>
+              <td className="p-2 text-center">{p.name} Nombre</td>
               <td className="p-2 text-center">{p.description ?? "N/A"}</td>
               <td className="p-2 text-center">{p.brand}</td>
+              <td className="p-2 text-center">${p.costPrice}</td>
               <td className="p-2 text-center">${p.price}</td>
               <td className="p-2 text-center"><Image src={p.imageUrl} alt={p.name} width={100} height={100} className="rounded-full" /></td>
               <td className="p-2 text-center">{p.gender ?? "N/A"}</td>

@@ -100,6 +100,7 @@ export default function OrdersPage() {
               <th className="p-3 border">Cliente</th>
               <th className="p-3 border">Total</th>
               <th className="p-3 border">Estado</th>
+              <th className="p-3 border">Nota</th>
               <th className="p-3 border">Fecha</th>
             </tr>
           </thead>
@@ -117,6 +118,7 @@ export default function OrdersPage() {
                   ${order.totalAmount.toFixed(2)}
                 </td>
                 <td className="p-3 border text-center">{order.status}</td>
+                <td className="p-3 border text-center">{order.note ?? "N/A"}</td>
                 <td className="p-3 border text-center">
                   {new Date(order.createdAt).toLocaleDateString()}
                 </td>
@@ -147,6 +149,18 @@ function OrderModal({
 }) {
 
   const [newStatus, setNewStatus] = useState(order.status);
+
+  const [newNote, setNewNote] = useState(order.note ?? "");
+
+  const updateNote = async () => {
+    await fetch(`/api/ordersadmin/${order.id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ note: newNote }),
+    });
+
+    onUpdateStatus(order.id, newStatus);
+  };
 
   return (
     <div className="bg-[#F6F3EC] flex items-center justify-center z-50">
@@ -235,6 +249,23 @@ function OrderModal({
             onClick={() => onUpdateStatus(order.id, newStatus)}
           >
             Actualizar estado
+          </button>
+        </div>
+
+        {/* NOTA */}
+        <div className="mb-4 font-pt-serif text-[#36302A] text-xl">
+          <h3 className="font-semibold mb-2">Nota:</h3>
+          <textarea
+            className="p-2 border rounded w-full"
+            value={newNote}
+            onChange={(e) => setNewNote(e.target.value)}
+          />
+
+          <button
+            className="mt-3 px-4 py-2 bg-[#574C3F] text-white rounded hover:bg-[#B9A590]"
+            onClick={updateNote}
+          >
+            Actualizar nota
           </button>
         </div>
 

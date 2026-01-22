@@ -4,11 +4,13 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  // url      = env("DATABASE_URL")
 }
+
 
 model User {
   id        Int      @id @default(autoincrement())
+  clerkId   String   @unique     
   name      String
   email     String   @unique
   role      Role     @default(CLIENT)
@@ -25,6 +27,7 @@ model Product {
   name        String
   description String?
   brand       Brand
+  costPrice   Float?
   price       Float
   imageUrl    String
   gender      Gender?
@@ -43,6 +46,7 @@ model Order {
   paymentMethod   PaymentMethod
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
+  paidAt          DateTime?
   note            String?
   shippingAddress ShippingAddress? @relation("OrderToShippingAddress", fields: [shippingId], references: [id])
   user            User?            @relation(fields: [userId], references: [id])
@@ -57,8 +61,9 @@ model ShippingAddress {
   addressLine1 String
   addressLine2 String?
   postalCode   String?
-  document     String?
-  phone        String?
+  phone1        String?
+  phone2        String?
+  notes         String?
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
   order        Order?   @relation("OrderToShippingAddress")
@@ -69,6 +74,7 @@ model OrderItem {
   orderId   Int
   productId Int
   quantity  Int     @default(1)
+  costPrice Float?
   price     Float
   order     Order   @relation(fields: [orderId], references: [id])
   product   Product @relation(fields: [productId], references: [id])

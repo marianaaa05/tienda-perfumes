@@ -6,7 +6,6 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   const { id } = await context.params;
-
   const orderId = Number(id);
 
   if (!orderId || isNaN(orderId)) {
@@ -14,18 +13,21 @@ export async function PUT(
   }
 
   const body = await req.json();
-  const { status } = body;
+  const { status, note } = body;
 
-  if (!status) {
+  if (!status && !note) {
     return NextResponse.json(
-      { error: "Estado faltante" },
+      { error: "No hay datos para actualizar" },
       { status: 400 }
     );
   }
 
   const updatedOrder = await prisma.order.update({
     where: { id: orderId },
-    data: { status },
+    data: {
+      ...(status && { status }),
+      ...(note !== undefined && { note }),
+    },
   });
 
   return NextResponse.json(updatedOrder);

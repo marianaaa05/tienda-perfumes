@@ -34,9 +34,11 @@ export default function CartPage() {
   const [addressLine1, setAddressLine1] = useState("");
   const [addressLine2, setAddressLine2] = useState("");
   const [postalCode, setPostalCode] = useState("");
-  const [documentUser, setDocumentUser] = useState("");
-  const [phone, setPhone] = useState("");
+  // const [documentUser, setDocumentUser] = useState("");
+  const [phone1, setPhone1] = useState("");
+  const [phone2, setPhone2] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("");
+  const [note, setNote] = useState("");
 
   // revisa si el usuario está logueado para mostrar el carrito
   useEffect(() => {
@@ -157,15 +159,16 @@ export default function CartPage() {
       }
 
       const payload = {
-        cartItems: cart, 
+        cartItems: cart,
         department,
         city,
         addressLine1,
         addressLine2,
         postalCode,
-        documentUser,
-        phone,
+        phone1,
+        phone2,
         paymentMethod,
+        note,
       };
 
       const res = await fetch("/api/orders", {
@@ -173,7 +176,7 @@ export default function CartPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", 
+        credentials: "include",
         body: JSON.stringify(payload),
       });
 
@@ -190,7 +193,6 @@ export default function CartPage() {
       // Vaciar carrito al registrar la orden
       setCart([]);
       localStorage.removeItem("cart");
-
     } catch (error) {
       console.error("❌ Error al enviar orden:", error);
       alert("Error inesperado. Intenta nuevamente.");
@@ -202,6 +204,30 @@ export default function CartPage() {
     const enCarrito = cart.find((c) => c.id === item.id)?.cantidad || 0;
     return item.stock !== undefined && enCarrito < item.stock;
   };
+
+  // validaciones del formulario, los campos con * son obligatorios
+  const validateCheckoutForm = () => {
+  const newErrors: Record<string, string> = {};
+
+  if (!department.trim()) newErrors.department = "El departamento es obligatorio";
+  if (!city.trim()) newErrors.city = "La ciudad es obligatoria";
+  if (!addressLine1.trim()) newErrors.addressLine1 = "La dirección es obligatoria";
+
+  if (!phone1.trim()) {
+    newErrors.phone1 = "El teléfono es obligatorio";
+  } else if (!/^[0-9+\s-]{7,15}$/.test(phone1)) {
+    newErrors.phone1 = "Número de teléfono inválido";
+  }
+
+  if (!paymentMethod) {
+    newErrors.paymentMethod = "Selecciona un método de pago";
+  }
+
+  return Object.keys(newErrors).length === 0;
+};
+
+
+
 
   return (
     <div className="bg-[#ECE4DA] min-h-screen flex flex-col items-center py-20 px-6">
@@ -254,7 +280,6 @@ export default function CartPage() {
                     +
                   </button>
                 )}
-                {/* <button onClick={() => increaseQty(product.id)} className="border px-3 py-1 rounded-full bg-[#B9A590] hover:bg-[#574C3F] hover:text-white">+</button> */}
                 <button
                   onClick={() => removeFromCart(product.id)}
                   className="ml-4 text-sm font-pt-serif text-red-500 hover:underline"
@@ -276,23 +301,25 @@ export default function CartPage() {
         </button>
       </Link>
 
-      <button
-        className="mt-6 bg-green-400 text-white font-pt-serif px-8 py-3 rounded-full hover:bg-green-500"
-        onClick={() => setShowCheckoutForm(true)}
-      >
-        Finalizar compra
-      </button>
-
+      {cart.length > 0 && (
+        <button
+          className="mt-6 bg-green-400 text-white font-pt-serif px-8 py-3 rounded-full hover:bg-green-500"
+          onClick={() => setShowCheckoutForm(true)}
+        >
+          Finalizar compra
+        </button>
+      )}
+      
       {showCheckoutForm && (
         <div className="mt-10 w-full max-w-2xl bg-white text-[#574C3F] p-6 rounded-xl shadow-md">
           <h3 className="flex flex-col items-center justify-center text-3xl font-marcellus text-[#36302A] mb-4">
             Datos de envío y pago
           </h3>
-
+   
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-pt-serif text-xl">
             <input
               type="text"
-              placeholder="Departamento"
+              placeholder="Departamento *"
               className="border p-2 rounded"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
@@ -300,7 +327,7 @@ export default function CartPage() {
 
             <input
               type="text"
-              placeholder="Ciudad"
+              placeholder="Ciudad *"
               className="border p-2 rounded"
               value={city}
               onChange={(e) => setCity(e.target.value)}
@@ -308,7 +335,7 @@ export default function CartPage() {
 
             <input
               type="text"
-              placeholder="Dirección"
+              placeholder="Dirección *"
               className="border p-2 rounded"
               value={addressLine1}
               onChange={(e) => setAddressLine1(e.target.value)}
@@ -332,18 +359,18 @@ export default function CartPage() {
 
             <input
               type="text"
-              placeholder="Documento"
+              placeholder="Teléfono principal *"
               className="border p-2 rounded"
-              value={documentUser}
-              onChange={(e) => setDocumentUser(e.target.value)}
+              value={phone1}
+              onChange={(e) => setPhone1(e.target.value)}
             />
 
             <input
               type="text"
-              placeholder="Teléfono"
+              placeholder="Teléfono adicional (opcional)"
               className="border p-2 rounded"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              value={phone2}
+              onChange={(e) => setPhone2(e.target.value)}
             />
 
             <select
@@ -351,20 +378,30 @@ export default function CartPage() {
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
             >
-              <option value="">Método de pago</option>
+              <option value="">Método de pago *</option>
               <option value="EFECTIVO">Efectivo</option>
               <option value="TARJETA">Tarjeta</option>
               <option value="PSE">PSE</option>
               <option value="CUOTAS">Cuotas</option>
             </select>
+
+            <input
+              type="text"
+              placeholder="Nota (opcional)"
+              className="border p-2 rounded col-span-2"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+            />
           </div>
 
+          {/* {!validateCheckoutForm() && ( */}
           <button
             onClick={createOrder}
             className="mt-6 w-full bg-green-400 text-white text-xl font-pt-serif px-8 py-3 rounded-full hover:bg-green-500"
           >
             Confirmar pedido
           </button>
+          {/* )} */}
 
           <button
             onClick={() => setShowCheckoutForm(false)}

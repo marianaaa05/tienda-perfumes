@@ -101,6 +101,8 @@ export default function Store() {
     persist();
   }, [cart, isLoaded, isSignedIn, user?.id]);
 
+  
+
 
   const addToCart = (id: number) => {
   const item = products.find(p => p.id === id);
@@ -140,7 +142,10 @@ export default function Store() {
     return item ? item.cantidad : 0;
   };
 
-  const totalProductos = (cart ?? []).reduce((acc, p) => acc + p.cantidad, 0);
+const totalProductos =
+  mounted && cart && cart.length > 0
+    ? cart.reduce((acc, p) => acc + p.cantidad, 0)
+    : 0;
 
   // durante carga del carrito mostramos placeholders y no renderizamos número (evita hydration mismatch)
   if (!mounted || cart === null) {

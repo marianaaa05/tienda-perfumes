@@ -33,6 +33,7 @@ export async function POST(req: Request) {
     if (!userDB) {
       userDB = await prisma.user.create({
         data: {
+          clerkId: userId,
           email,
           name: clerkUser?.firstName || "Usuario",
         },
@@ -48,9 +49,10 @@ export async function POST(req: Request) {
       addressLine1,
       addressLine2,
       postalCode,
-      documentUser,
-      phone,
+      phone1,
+      phone2,
       paymentMethod,
+      note,
     } = body;
 
     // Validaciones...
@@ -61,7 +63,7 @@ export async function POST(req: Request) {
       );
     }
 
-    if (!department || !city || !addressLine1) {
+    if (!department || !city || !addressLine1 || !phone1 || !paymentMethod) {
       return NextResponse.json(
         { error: "Faltan campos obligatorios" },
         { status: 400 }
@@ -75,73 +77,95 @@ export async function POST(req: Request) {
       );
     }
 
-    // Productos reales desde BD
-    const products = await prisma.product.findMany({
-      where: {
-        id: { in: cartItems.map((i: CartItem) => i.id) },
-      },
-    });
+      // 👉 TODO ESTO VA DENTRO DE LA TRANSACCIÓN
+const result = await prisma.$transaction(async (tx) => {
+  // Productos reales desde BD
+  const products = await tx.product.findMany({
+    where: {
+      id: { in: cartItems.map((i: CartItem) => i.id) },
+    },
+  });
 
-    if (products.length !== cartItems.length) {
-      return NextResponse.json(
-        { error: "Uno o más productos no existen" },
-        { status: 400 }
+  if (products.length !== cartItems.length) {
+    throw new Error("Uno o más productos no existen");
+  }
+
+  // Verificar stock + calcular total
+  let totalAmount = 0;
+  const itemsData = cartItems.map((item: CartItem) => {
+    const product = products.find((p) => p.id === item.id)!;
+
+    if (product.stock < item.cantidad) {
+      throw new Error(
+        `Stock insuficiente para ${product.name}`
       );
     }
 
-    // Calcular total
-    let totalAmount = 0;
-    const itemsData = cartItems.map((item: CartItem) => {
-      const product = products.find((p) => p.id === item.id)!;
-      totalAmount += product.price * item.cantidad;
+    totalAmount += product.price * item.cantidad;
 
-      return {
-        productId: product.id,
-        quantity: item.cantidad,
-        price: product.price,
-      };
-    });
+    return {
+      productId: product.id,
+      quantity: item.cantidad,
+      price: product.price,
+    };
+  });
 
-    // Crear dirección de envío
-    const shippingAddress = await prisma.shippingAddress.create({
+  // Crear dirección de envío
+  const shippingAddress = await tx.shippingAddress.create({
+    data: {
+      department,
+      city,
+      addressLine1,
+      addressLine2,
+      postalCode,
+      phone1: phone1 ?? null,
+      phone2: phone2 ?? null,
+      notes: note ?? null,
+    },
+  });
+
+  // Crear orden
+  const order = await tx.order.create({
+    data: {
+      user: { connect: { id: userDB.id } },
+      status: "PENDING",
+      totalAmount,
+      paymentMethod,
+      shippingAddress: { connect: { id: shippingAddress.id } },
+    },
+  });
+
+  // Crear items
+  await tx.orderItem.createMany({
+    data: itemsData.map((item) => ({
+      ...item,
+      orderId: order.id,
+    })),
+  });
+
+  // 🔥 REDUCIR STOCK (CLAVE)
+  for (const item of itemsData) {
+    await tx.product.update({
+      where: { id: item.productId },
       data: {
-        department,
-        city,
-        addressLine1,
-        addressLine2,
-        postalCode,
-        document: documentUser ?? null,
-        phone: phone ?? null,
+        stock: {
+          decrement: item.quantity,
+        },
       },
     });
+  }
 
-    // Crear orden (CORRECTO)
-    const order = await prisma.order.create({
-      data: {
-        user: { connect: { id: userDB.id } },
-        status: "PENDING",
-        totalAmount,
-        paymentMethod,
-        shippingAddress: { connect: { id: shippingAddress.id } }, // ← ESTA ES LA SOLUCIÓN
-      },
-    });
-
-    // Crear items
-    await prisma.orderItem.createMany({
-      data: itemsData.map((item) => ({
-        ...item,
-        orderId: order.id,
-      })),
-    });
+  return order;
+});
 
     return NextResponse.json({
       message: "Orden creada con éxito",
-      orderId: order.id,
+      orderId: result.id,
     });
   } catch (error) {
     console.error("Error al crear la orden:", error);
     return NextResponse.json(
-      { error: "Error interno al crear la orden" },
+      { error: (error as Error).message || "Error interno al crear la orden" },
       { status: 500 }
     );
   }

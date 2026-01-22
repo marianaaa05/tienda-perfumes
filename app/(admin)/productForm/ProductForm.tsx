@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import type { ProductType } from "../products/page";
+import { supabase } from "@/utils/supabase/client";
 
 export default function ProductForm({
   product,
@@ -17,10 +18,11 @@ export default function ProductForm({
     name: "",
     description: "",
     brand: "NATURA",
-    price: 0,
+    costPrice: "",
+    price: "",
     imageUrl: "",
     gender: "MUJER",
-    stock: 0,
+    stock: "",
   });
 
   // ACTUALIZAR FORM CUANDO product CAMBIA
@@ -32,10 +34,11 @@ export default function ProductForm({
           name: product.name,
           description: product.description ?? "",
           brand: product.brand,
-          price: product.price,
+          costPrice: product.costPrice?.toString() ?? "",
+          price: product.price?.toString() ?? "",
           imageUrl: product.imageUrl,
           gender: product.gender ?? "MUJER",
-          stock: product.stock ?? 0,
+          stock: product.stock?.toString() ?? "",
         });
       } else {
         // nuevo producto
@@ -44,10 +47,11 @@ export default function ProductForm({
           name: "",
           description: "",
           brand: "NATURA",
-          price: 0,
+          costPrice: "",
+          price: "",
           imageUrl: "",
           gender: "MUJER",
-          stock: 0,
+          stock: "",
         });
       }
     });
@@ -56,25 +60,51 @@ export default function ProductForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { id, ...data } = form;
+    //
+    if (form.name === ""|| form.costPrice === "" || form.price === "" || form.stock === "") {
+      alert("Nombre, costo, precio y stock son campos obligatorios");
+      return;
+    }
 
-    // Si id === 0 → es producto nuevo → usar POST
-    const url = id === 0 ? "/api/products" : `/api/products/${id}`;
-    const method = id === 0 ? "POST" : "PUT";
+    if (!form.imageUrl) {
+      alert("Debes subir una imagen del producto para que tus clientes la vean");
+      return;
+    }
+
+    const payload = {
+      name: form.name,
+      description: form.description || null,
+      brand: form.brand,
+      costPrice: Number(form.costPrice),
+      price: Number(form.price),
+      imageUrl: form.imageUrl || null,
+      gender: form.gender,
+      stock: Number(form.stock),
+    };
+
+    if (Number.isNaN(payload.price) || Number.isNaN(payload.stock)) {
+      alert("Precio y stock deben ser números válidos");
+      return;
+    }
+    //
+
+    const url = form.id === 0 ? "/api/products" : `/api/products/${form.id}`;
+    const method = form.id === 0 ? "POST" : "PUT";
 
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify(payload), // ✅ AQUÍ ESTÁ LA CLAVE
     });
 
     if (!res.ok) {
-      console.error("Error guardando producto");
+      const error = await res.json();
+      console.error("Error guardando producto:", error);
       return;
     }
 
-    onSave(); 
-    onClose(); 
+    onSave();
+    onClose();
   };
 
   return (
@@ -113,21 +143,54 @@ export default function ProductForm({
             <option value="YANBAL">YANBAL</option>
           </select>
 
+          {/* costo del producto */}
+          <input
+            className="rounded-b-sm shadow-md p-2"
+            type="number"
+            placeholder="Costo"
+            value={form.costPrice}
+            onChange={(e) => setForm({ ...form, costPrice: e.target.value })}
+          />
+
+          {/* valor de venta */}
           <input
             className="rounded-b-sm shadow-md p-2"
             type="number"
             placeholder="Precio"
             value={form.price}
-            onChange={(e) =>
-              setForm({ ...form, price: Number(e.target.value) })
-            }
+            onChange={(e) => setForm({ ...form, price: e.target.value })}
           />
 
           <input
+            type="file"
+            accept="image/*"
             className="rounded-b-sm shadow-md p-2"
-            placeholder="Imagen URL"
-            value={form.imageUrl}
-            onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
+            onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+
+              const fileExt = file.name.split(".").pop();
+              const fileName = `${crypto.randomUUID()}.${fileExt}`;
+              const filePath = `product/${fileName}`;
+
+              const { error } = await supabase.storage
+                .from("product")
+                .upload(filePath, file, {
+                  cacheControl: "3600",
+                  upsert: false,
+                });
+
+              if (error) {
+                console.error("Error subiendo imagen:", error.message);
+                return;
+              }
+
+              const { data } = supabase.storage
+                .from("product")
+                .getPublicUrl(filePath);
+
+              setForm({ ...form, imageUrl: data.publicUrl });
+            }}
           />
 
           <select
@@ -150,9 +213,7 @@ export default function ProductForm({
             type="number"
             placeholder="Stock"
             value={form.stock}
-            onChange={(e) =>
-              setForm({ ...form, stock: Number(e.target.value) })
-            }
+            onChange={(e) => setForm({ ...form, stock: e.target.value })}
           />
 
           <button

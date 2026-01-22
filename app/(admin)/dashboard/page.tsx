@@ -70,6 +70,10 @@ export default function DashboardPage() {
               💰 Ventas
             </NextLink>
 
+            <NextLink href="/reports" className="hover:text-[#B9A590] cursor-pointer">
+              📊 Reportes
+            </NextLink>
+
             <NextLink
               href="/clients"
               className="hover:text-[#B9A590] cursor-pointer"

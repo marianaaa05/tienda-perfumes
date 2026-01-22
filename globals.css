@@ -1,0 +1,13 @@
+@media print {
+  body {
+    background: white !important;
+  }
+
+  table {
+    page-break-inside: avoid;
+  }
+
+  button {
+    display: none !important;
+  }
+}
