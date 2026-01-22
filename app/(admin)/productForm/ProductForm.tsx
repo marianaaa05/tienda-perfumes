@@ -61,13 +61,20 @@ export default function ProductForm({
     e.preventDefault();
 
     //
-    if (form.name === ""|| form.costPrice === "" || form.price === "" || form.stock === "") {
+    if (
+      form.name === "" ||
+      form.costPrice === "" ||
+      form.price === "" ||
+      form.stock === ""
+    ) {
       alert("Nombre, costo, precio y stock son campos obligatorios");
       return;
     }
 
     if (!form.imageUrl) {
-      alert("Debes subir una imagen del producto para que tus clientes la vean");
+      alert(
+        "Debes subir una imagen del producto para que tus clientes la vean",
+      );
       return;
     }
 
@@ -170,7 +177,10 @@ export default function ProductForm({
               if (!file) return;
 
               const fileExt = file.name.split(".").pop();
-              const fileName = `${crypto.randomUUID()}.${fileExt}`;
+              // const fileName = `${crypto.randomUUID()}.${fileExt}`;
+              const fileName = `${Date.now()}-${Math.random()
+                .toString(36)
+                .substring(2, 10)}.${fileExt}`;
               const filePath = `product/${fileName}`;
 
               const { error } = await supabase.storage

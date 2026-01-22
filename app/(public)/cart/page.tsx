@@ -103,12 +103,12 @@ export default function CartPage() {
 
   if (isLoaded && !isSignedIn) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-[#ECE4DA]">
-        <h2 className="text-3xl font-marcellus text-[#36302A] mb-4">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#ECE4DA] px-4 text-center">
+        <h2 className="text-2xl sm:text-3xl font-marcellus text-[#36302A] mb-4">
           Debes iniciar sesión para ver tu carrito 🛍️
         </h2>
         <SignInButton mode="modal">
-          <button className="bg-[#B9A590] text-white rounded-full px-4 py-2">
+          <button className="bg-[#B9A590] text-white rounded-full px-6 py-2 text-sm sm:text-base">
             Iniciar sesión
           </button>
         </SignInButton>
@@ -118,8 +118,8 @@ export default function CartPage() {
 
   if (cart.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen bg-[#ECE4DA]">
-        <h2 className="text-3xl font-marcellus text-[#36302A] mb-4">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#ECE4DA] px-4 text-center">
+        <h2 className="text-2xl sm:text-3xl font-marcellus text-[#36302A] mb-4">
           Tu carrito está vacío 🛍️
         </h2>
         <Link
@@ -134,13 +134,13 @@ export default function CartPage() {
 
   const increaseQty = (id: number) =>
     setCart((prev) =>
-      prev!.map((p) => (p.id === id ? { ...p, cantidad: p.cantidad + 1 } : p))
+      prev!.map((p) => (p.id === id ? { ...p, cantidad: p.cantidad + 1 } : p)),
     );
   const decreaseQty = (id: number) =>
     setCart((prev) =>
       prev!
         .map((p) => (p.id === id ? { ...p, cantidad: p.cantidad - 1 } : p))
-        .filter((p) => p.cantidad > 0)
+        .filter((p) => p.cantidad > 0),
     );
   const removeFromCart = (id: number) =>
     setCart((prev) => prev!.filter((p) => p.id !== id));
@@ -207,41 +207,40 @@ export default function CartPage() {
 
   // validaciones del formulario, los campos con * son obligatorios
   const validateCheckoutForm = () => {
-  const newErrors: Record<string, string> = {};
+    const newErrors: Record<string, string> = {};
 
-  if (!department.trim()) newErrors.department = "El departamento es obligatorio";
-  if (!city.trim()) newErrors.city = "La ciudad es obligatoria";
-  if (!addressLine1.trim()) newErrors.addressLine1 = "La dirección es obligatoria";
+    if (!department.trim())
+      newErrors.department = "El departamento es obligatorio";
+    if (!city.trim()) newErrors.city = "La ciudad es obligatoria";
+    if (!addressLine1.trim())
+      newErrors.addressLine1 = "La dirección es obligatoria";
 
-  if (!phone1.trim()) {
-    newErrors.phone1 = "El teléfono es obligatorio";
-  } else if (!/^[0-9+\s-]{7,15}$/.test(phone1)) {
-    newErrors.phone1 = "Número de teléfono inválido";
-  }
+    if (!phone1.trim()) {
+      newErrors.phone1 = "El teléfono es obligatorio";
+    } else if (!/^[0-9+\s-]{7,15}$/.test(phone1)) {
+      newErrors.phone1 = "Número de teléfono inválido";
+    }
 
-  if (!paymentMethod) {
-    newErrors.paymentMethod = "Selecciona un método de pago";
-  }
+    if (!paymentMethod) {
+      newErrors.paymentMethod = "Selecciona un método de pago";
+    }
 
-  return Object.keys(newErrors).length === 0;
-};
-
-
-
+    return Object.keys(newErrors).length === 0;
+  };
 
   return (
-    <div className="bg-[#ECE4DA] min-h-screen flex flex-col items-center py-20 px-6">
-      <h2 className="text-4xl font-marcellus text-[#36302A] mb-8">
+    <div className="bg-[#ECE4DA] min-h-screen flex flex-col items-center py-14 sm:py-20 px-2 sm:px-6">
+      <h2 className="text-3xl sm:text-4xl font-marcellus text-[#36302A] mb-8 text-center">
         Tu carrito 🛒
       </h2>
-      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-md p-6 space-y-6">
+      <div className="w-full max-w-4xl bg-white rounded-2xl shadow-md p-4 sm:p-6 space-y-6">
         {cart.map((item) => {
           const product = products.find((p) => p.id === item.id);
           if (!product) return null;
           return (
             <div
               key={product.id}
-              className="flex items-center justify-between border-b pb-4"
+              className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-4 sm:pb-6"
             >
               <div className="flex items-center gap-4">
                 <Image
@@ -252,10 +251,10 @@ export default function CartPage() {
                   className="rounded-lg object-cover"
                 />
                 <div>
-                  <h3 className="text-xl font-marcellus text-[#36302A]">
+                  <h3 className="text-xl sm:text-2xl font-marcellus text-[#36302A]">
                     {product.name}
                   </h3>
-                  <p className="text-[#574C3F]">
+                  <p className="text-[#574C3F] text-lg sm:text-base">
                     ${product.price.toLocaleString("es-CO")}
                   </p>
                 </div>
@@ -309,18 +308,34 @@ export default function CartPage() {
           Finalizar compra
         </button>
       )}
-      
+
+     <div className="mt-6 w-full max-w-2xl bg-white rounded-2xl p-5 shadow shadow-orange-400 border border-[#ECE4DA]">
+  <h2 className="text-lg sm:text-xl font-marcellus text-orange-500 text-center">
+    Tener en cuenta❗
+  </h2>
+
+  <p className="mt-3 text-sm sm:text-base text-center font-pt-serif text-[#574C3F]">
+    El pago se realiza contra entrega e incluye el domicilio.  
+    Los productos serán entregados en un plazo de 3 a 5 días hábiles.
+  </p>
+</div>
+
+
+
+
+
+
       {showCheckoutForm && (
-        <div className="mt-10 w-full max-w-2xl bg-white text-[#574C3F] p-6 rounded-xl shadow-md">
-          <h3 className="flex flex-col items-center justify-center text-3xl font-marcellus text-[#36302A] mb-4">
+        <div className="mt-10 w-full max-w-2xl bg-white text-[#574C3F] p-4 sm:p-6 rounded-xl shadow-md">
+          <h3 className="text-2xl sm:text-3xl text-center font-marcellus text-[#36302A] mb-6">
             Datos de envío y pago
           </h3>
-   
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-pt-serif text-xl">
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-pt-serif text-base sm:text-lg">
             <input
               type="text"
               placeholder="Departamento *"
-              className="border p-2 rounded"
+              className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#B9A590]"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
             />
@@ -328,7 +343,7 @@ export default function CartPage() {
             <input
               type="text"
               placeholder="Ciudad *"
-              className="border p-2 rounded"
+              className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#B9A590]"
               value={city}
               onChange={(e) => setCity(e.target.value)}
             />
@@ -336,7 +351,7 @@ export default function CartPage() {
             <input
               type="text"
               placeholder="Dirección *"
-              className="border p-2 rounded"
+              className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#B9A590]"
               value={addressLine1}
               onChange={(e) => setAddressLine1(e.target.value)}
             />
@@ -344,7 +359,7 @@ export default function CartPage() {
             <input
               type="text"
               placeholder="Dirección adicional (opcional)"
-              className="border p-2 rounded"
+              className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#B9A590]"
               value={addressLine2}
               onChange={(e) => setAddressLine2(e.target.value)}
             />
@@ -352,7 +367,7 @@ export default function CartPage() {
             <input
               type="text"
               placeholder="Código Postal"
-              className="border p-2 rounded"
+              className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#B9A590]"
               value={postalCode}
               onChange={(e) => setPostalCode(e.target.value)}
             />
@@ -360,7 +375,7 @@ export default function CartPage() {
             <input
               type="text"
               placeholder="Teléfono principal *"
-              className="border p-2 rounded"
+              className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#B9A590]"
               value={phone1}
               onChange={(e) => setPhone1(e.target.value)}
             />
@@ -368,13 +383,13 @@ export default function CartPage() {
             <input
               type="text"
               placeholder="Teléfono adicional (opcional)"
-              className="border p-2 rounded"
+              className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#B9A590]"
               value={phone2}
               onChange={(e) => setPhone2(e.target.value)}
             />
 
             <select
-              className="border p-2 rounded"
+              className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#B9A590]"
               value={paymentMethod}
               onChange={(e) => setPaymentMethod(e.target.value)}
             >
@@ -388,24 +403,22 @@ export default function CartPage() {
             <input
               type="text"
               placeholder="Nota (opcional)"
-              className="border p-2 rounded col-span-2"
+              className="border p-3 rounded focus:outline-none focus:ring-2 focus:ring-[#B9A590] md:col-span-2"
               value={note}
               onChange={(e) => setNote(e.target.value)}
             />
           </div>
 
-          {/* {!validateCheckoutForm() && ( */}
           <button
             onClick={createOrder}
-            className="mt-6 w-full bg-green-400 text-white text-xl font-pt-serif px-8 py-3 rounded-full hover:bg-green-500"
+            className="mt-6 w-full bg-green-500 text-white text-lg sm:text-xl font-pt-serif px-8 py-3 rounded-full hover:bg-green-600 transition"
           >
             Confirmar pedido
           </button>
-          {/* )} */}
 
           <button
             onClick={() => setShowCheckoutForm(false)}
-            className="mt-3 text-red-500 text-xl font-pt-serif w-full hover:underline"
+            className="mt-4 w-full text-red-500 text-base sm:text-lg font-pt-serif hover:underline"
           >
             Cancelar
           </button>

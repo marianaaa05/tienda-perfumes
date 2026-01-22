@@ -2,64 +2,58 @@ import { Facebook, Instagram, Twitter } from "lucide-react";
 
 export default function Networks() {
   return (
-    <>
-      <div id="networks">
-        <div className="bg-[#ECE4DA] w-full flex flex-col items-center pb-14">
-          <h2 className="text-center text-4xl font-marcellus mt-12 mb-8 text-[#36302A]">
-            Redes Sociales
-          </h2>
-          <h1 className="text-xl font-pt-serif mb-8 text-[#36302A]">
-            Siguenos en nuestras redes sociales para estar al tanto de las
-            últimas novedades y productos.
-          </h1>
-          <div className="flex flex-col md:flex-row gap-4 text-[#36302A] font-pt-serif">
-            <div className="flex flex-col w-full items-center">
-              <label className="text-[#36302A] font-marcellus mb-1">
-                Facebook
-              </label>
-              <a
-                href="https://www.facebook.com/perfumeriaescuchatearoma"
-                target="_blank"
-                rel="noreferrer"
-                className="border border-[#B9A590] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#574C3F]"
-              >
-                <Facebook size={30} color="#1877F2" />
-                Perfumería Escucha tu Aroma
-              </a>
-            </div>
+    <div id="networks" className="bg-[#ECE4DA] w-full py-14 px-4">
+      <div className="max-w-5xl mx-auto flex flex-col items-center">
+        <h2 className="text-center text-2xl sm:text-3xl md:text-4xl font-marcellus mb-6 text-[#36302A]">
+          Redes Sociales
+        </h2>
 
-            <div className="flex flex-col w-full items-center">
-              <label className="text-[#36302A] font-marcellus mb-1">
-                Instagram
-              </label>
-              <a
-                href="https://www.instagram.com/perfumeriaescuchatearoma"
-                target="_blank"
-                rel="noreferrer"
-                className="border border-[#B9A590] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#574C3F]"
-              >
-                <Instagram size={30} color="#E4405F" />
-                Perfumería Escucha tu Aroma
-              </a>
-            </div>
+        <p className="text-center text-base sm:text-lg font-pt-serif mb-10 text-[#36302A] max-w-2xl">
+          Síguenos en nuestras redes sociales para estar al tanto de las últimas
+          novedades y productos.
+        </p>
 
-            <div className="flex flex-col w-full items-center">
-              <label className="text-[#36302A] font-marcellus mb-1">
-                Twitter
-              </label>
-              <a
-                href="https://twitter.com/PerfumeriaEscuchaTeAroma"
-                target="_blank"
-                rel="noreferrer"
-                className="border border-[#B9A590] rounded-md px-3 py-2 focus:outline-none focus:ring-2 focus:ring-[#574C3F]"
-              >
-                <Twitter size={30} color="#1DA1F2" />
-                Perfumería Escucha tu Aroma
-              </a>
-            </div>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+          {/* Facebook */}
+          <a
+            href="https://www.facebook.com/perfumeriaescuchatearoma"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 border border-[#B9A590] rounded-xl px-5 py-4 text-[#36302A] font-pt-serif hover:bg-[#DED2C3] transition shadow-sm"
+          >
+            <Facebook size={32} color="#1877F2" />
+            <span className="text-center md:text-left">
+              Perfumería Escucha tu Aroma
+            </span>
+          </a>
+
+          {/* Instagram */}
+          <a
+            href="https://www.instagram.com/perfumeriaescuchatearoma"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 border border-[#B9A590] rounded-xl px-5 py-4 text-[#36302A] font-pt-serif hover:bg-[#DED2C3] transition shadow-sm"
+          >
+            <Instagram size={32} color="#E4405F" />
+            <span className="text-center md:text-left">
+              Perfumería Escucha tu Aroma
+            </span>
+          </a>
+
+          {/* Twitter */}
+          <a
+            href="https://twitter.com/PerfumeriaEscuchaTeAroma"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-3 border border-[#B9A590] rounded-xl px-5 py-4 text-[#36302A] font-pt-serif hover:bg-[#DED2C3] transition shadow-sm"
+          >
+            <Twitter size={32} color="#1DA1F2" />
+            <span className="text-center md:text-left">
+              Perfumería Escucha tu Aroma
+            </span>
+          </a>
         </div>
       </div>
-    </>
+    </div>
   );
 }
