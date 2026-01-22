@@ -8,13 +8,14 @@ export async function POST(req: Request) {
     if (payload.type === "user.created") {
       const user = payload.data;
 
+      const clerkId = user.id;
       const email = user.email_addresses?.[0]?.email_address;
       const name = user.first_name || user.username || "Usuario";
 
       if (!email) {
         return NextResponse.json(
           { error: "No email provided" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -25,6 +26,7 @@ export async function POST(req: Request) {
       if (!exist) {
         await prisma.user.create({
           data: {
+            clerkId,
             name,
             email,
             role: "CLIENT",
