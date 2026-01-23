@@ -114,5 +114,5 @@ enum PaymentMethod {
   EFECTIVO
   TARJETA
   PSE
-  CUOTAS
+  NEQUI
 }

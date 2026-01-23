@@ -309,28 +309,24 @@ export default function CartPage() {
         </button>
       )}
 
-     <div className="mt-6 w-full max-w-2xl bg-white rounded-2xl p-5 shadow shadow-orange-400 border border-[#ECE4DA]">
-  <h2 className="text-lg sm:text-xl font-marcellus text-orange-500 text-center">
-    Tener en cuenta❗
-  </h2>
+      <div className="mt-6 w-full max-w-2xl bg-white rounded-2xl p-5 shadow shadow-orange-400 border border-[#ECE4DA]">
+        <h2 className="text-lg sm:text-xl font-marcellus text-orange-500 text-center">
+          Tener en cuenta❗
+        </h2>
 
-  <p className="mt-3 text-sm sm:text-base text-center font-pt-serif text-[#574C3F]">
-    El pago se realiza contra entrega e incluye el domicilio.  
-    Los productos serán entregados en un plazo de 3 a 5 días hábiles.
-  </p>
-</div>
-
-
-
-
-
+        <p className="mt-3 text-sm sm:text-base text-center font-pt-serif text-[#574C3F]">
+          El pago se realiza contra entrega y el valor presentado incluye el
+          domicilio. Los productos serán entregados en un plazo de 3 a 5 días
+          hábiles posteriores a realizar el pedido.
+        </p>
+      </div>
 
       {showCheckoutForm && (
         <div className="mt-10 w-full max-w-2xl bg-white text-[#574C3F] p-4 sm:p-6 rounded-xl shadow-md">
           <h3 className="text-2xl sm:text-3xl text-center font-marcellus text-[#36302A] mb-6">
             Datos de envío y pago
           </h3>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-pt-serif text-base sm:text-lg">
             <input
               type="text"
@@ -397,7 +393,7 @@ export default function CartPage() {
               <option value="EFECTIVO">Efectivo</option>
               <option value="TARJETA">Tarjeta</option>
               <option value="PSE">PSE</option>
-              <option value="CUOTAS">Cuotas</option>
+              <option value="NEQUI">Nequi</option>
             </select>
 
             <input
@@ -410,7 +406,15 @@ export default function CartPage() {
           </div>
 
           <button
-            onClick={createOrder}
+            onClick={() => {
+              if (validateCheckoutForm()) {
+                createOrder();
+              } else {
+                alert(
+                  "Por favor, completa todos los campos obligatorios correctamente.",
+                );
+              }
+            }}
             className="mt-6 w-full bg-green-500 text-white text-lg sm:text-xl font-pt-serif px-8 py-3 rounded-full hover:bg-green-600 transition"
           >
             Confirmar pedido
