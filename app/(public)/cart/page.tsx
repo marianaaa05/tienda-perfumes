@@ -392,8 +392,7 @@ export default function CartPage() {
               <option value="">Método de pago *</option>
               <option value="EFECTIVO">Efectivo</option>
               <option value="TARJETA">Tarjeta</option>
-              <option value="PSE">PSE</option>
-              <option value="NEQUI">Nequi</option>
+              <option value="TRANSFERENCIA">Transferencia</option>
             </select>
 
             <input

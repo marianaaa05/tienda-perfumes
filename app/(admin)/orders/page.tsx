@@ -46,21 +46,6 @@ export default function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // useEffect(() => {
-  //   const loadOrders = async () => {
-  //     try {
-  //       const res = await fetch("/api/ordersadmin");
-  //       const data = await res.json();
-  //       setOrders(data);
-  //     } catch (err) {
-  //       console.error("Error cargando órdenes:", err);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   loadOrders();
-  // }, []);
 
   useEffect(() => {
     const loadOrders = async () => {

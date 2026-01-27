@@ -30,8 +30,8 @@ export default function About() {
                 y notas irresistibles que te acompañarán todos los días. 
                 <br /><br />
                 Nos apasiona brindarte una experiencia de compra fácil, rápida y
-                segura, con productos originales y asesoría personalizada para
-                que encuentres el perfume perfecto para ti o para regalar.
+                segura, con productos originales para que encuentres el perfume perfecto para ti o 
+                para regalar, y lo mejor, no pagas antes de recibir tu pedido.
               </h3>
             </div>
           </div>

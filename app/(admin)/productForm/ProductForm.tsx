@@ -23,6 +23,7 @@ export default function ProductForm({
     imageUrl: "",
     gender: "MUJER",
     stock: "",
+    isActive: true,
   });
 
   // ACTUALIZAR FORM CUANDO product CAMBIA
@@ -39,6 +40,7 @@ export default function ProductForm({
           imageUrl: product.imageUrl,
           gender: product.gender ?? "MUJER",
           stock: product.stock?.toString() ?? "",
+          isActive: product.isActive ?? true,
         });
       } else {
         // nuevo producto
@@ -52,6 +54,7 @@ export default function ProductForm({
           imageUrl: "",
           gender: "MUJER",
           stock: "",
+          isActive: true,
         });
       }
     });
@@ -87,6 +90,7 @@ export default function ProductForm({
       imageUrl: form.imageUrl || null,
       gender: form.gender,
       stock: Number(form.stock),
+      isActive: form.isActive,
     };
 
     if (Number.isNaN(payload.price) || Number.isNaN(payload.stock)) {
@@ -101,7 +105,7 @@ export default function ProductForm({
     const res = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload), // ✅ AQUÍ ESTÁ LA CLAVE
+      body: JSON.stringify(payload),
     });
 
     if (!res.ok) {
@@ -225,6 +229,20 @@ export default function ProductForm({
             value={form.stock}
             onChange={(e) => setForm({ ...form, stock: e.target.value })}
           />
+
+          <select
+            className="rounded-b-sm shadow-md p-2"
+            value={form.isActive ? "true" : "false"}
+            onChange={(e) =>
+              setForm({
+                ...form,
+                isActive: e.target.value === "true",
+              })
+            }
+          >
+            <option value="true">Activo (visible en tienda)</option>
+            <option value="false">Inactivo (oculto)</option>
+          </select>
 
           <button
             className="bg-green-400 text-white py-2 rounded hover:bg-green-500"
