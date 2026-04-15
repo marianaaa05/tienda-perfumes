@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, Fragment } from "react";
 
 interface OrderProfit {
   orderId: number;
@@ -117,10 +117,10 @@ export default function ProfitReportPage() {
             </thead>
             <tbody className="text-[#36302A] font-pt-serif text-lg">
               {data.orders.map((order) => (
-                <>
+                <Fragment key={order.orderId}>
                   {/* FILA PRINCIPAL */}
                   <tr
-                    key={order.orderId}
+                    // key={order.orderId}
                     className="hover:bg-[#ECE4DA] cursor-pointer"
                     onClick={() => toggleOrder(order.orderId)}
                   >
@@ -204,7 +204,7 @@ export default function ProfitReportPage() {
                       </td>
                     </tr>
                   )}
-                </>
+                </Fragment>
               ))}
             </tbody>
           </table>
