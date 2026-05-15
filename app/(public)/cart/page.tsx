@@ -318,6 +318,9 @@ export default function CartPage() {
           El pago se realiza contra entrega y el valor presentado incluye el
           domicilio. Los productos serán entregados en un plazo de 3 a 5 días
           hábiles posteriores a realizar el pedido.
+          <br />
+          <br />
+          <strong>Nota:</strong> despues de realizar el pedido, no se puede cancelar, sin embargo, puede eliminar productos desde <strong>Mis pedidos</strong>.
         </p>
       </div>
 

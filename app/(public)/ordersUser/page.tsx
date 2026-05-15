@@ -87,9 +87,28 @@ export default function MisPedidos() {
   const statusDic = {
     PENDING: "Pendiente",
     PAID: "Pagado",
-    SHIPPED: "Enviado",
-    DELIVERED: "Entregado",
-    CANCELED: "Cancelado",
+  };
+
+  // ELIMINAR PRODUCTO DE PEDIDO
+  const deleteItem = async (id: number, itemId: number) => {
+    if (
+      !confirm(
+        "¿Seguro deseas eliminar este producto de este pedido?, este paso no se puede deshacer.",
+      )
+    )
+      return;
+
+    try {
+      const res = await fetch(`/api/ordersUser/${id}/items/${itemId}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) throw new Error();
+
+      await loadOrders();
+    } catch {
+      alert("No se pudo eliminar el producto del pedido");
+    }
   };
 
   return (
@@ -109,14 +128,8 @@ export default function MisPedidos() {
           </h2>
 
           <p className="mt-3 text-sm sm:text-base text-center font-pt-serif text-[#574C3F]">
-            Los pedidos en estado PENDIENTE pueden ser cancelados por el
-            usuario.
-            <br />
-            Una vez que un pedido cambia a PAGADO o ENVIADO, ya no podrá ser
-            cancelado.
-            <br />
-            Una vez que cancele un pedido, este cambiará a estado CANCELADO y no
-            podrá ser restaurado.
+            <strong>Nota:</strong> despues de realizar el pedido, no se puede
+            cancelar, sin embargo, puede eliminar productos de su pedido.
           </p>
         </div>
 
@@ -142,11 +155,22 @@ export default function MisPedidos() {
 
                 <div className="mt-2">
                   <p className="font-pt-serif">Items:</p>
-                  <ul className="list-disc list-inside font-pt-serif">
+                  <ul className="font-pt-serif space-y-2">
                     {order.items.map((item) => (
-                      <li key={item.id}>
-                        {item.quantity} x {item.product.name} - ${item.price}{" "}
-                        (precio unitario)
+                      <li key={item.id} className="flex items-center gap-10">
+                        <span>
+                          {item.quantity} x {item.product.name} - ${item.price}{" "}
+                          c/u = ${item.price * item.quantity}
+                        </span>
+
+                        {normalizedStatus === "PENDING" && (
+                          <button
+                            onClick={() => deleteItem(order.id, item.id)}
+                            className="text-red-500 text-sm hover:underline ml-auto"
+                          >
+                            Eliminar
+                          </button>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -154,7 +178,11 @@ export default function MisPedidos() {
                 <div className="mt-2">
                   <p className="font-pt-serif">Total:</p>
                   <p className="text-2xl font-pt-serif">
-                    ${order.items.reduce((acc, item) => acc + item.price, 0)}
+                    $
+                    {order.items.reduce(
+                      (acc, item) => acc + item.price * item.quantity,
+                      0,
+                    )}
                   </p>
                 </div>
                 <span
@@ -173,18 +201,6 @@ export default function MisPedidos() {
                     normalizedStatus}
                 </span>
               </div>
-
-              {normalizedStatus === "PENDING" && (
-                <button
-                  disabled={cancelingId === order.id}
-                  onClick={() => cancelOrder(order.id)}
-                  className="text-red-500 hover:underline font-pt-serif disabled:opacity-50"
-                >
-                  {cancelingId === order.id
-                    ? "Cancelando..."
-                    : "Cancelar pedido"}
-                </button>
-              )}
             </div>
           );
         })}

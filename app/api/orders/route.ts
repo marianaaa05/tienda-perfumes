@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 
 type CartItem = {
   id: number;
-  cantidad: number;
+  quantity: number;
 };
 
 export async function POST(req: Request) {
@@ -43,6 +43,7 @@ export async function POST(req: Request) {
 
     // BODY
     const body = await req.json();
+    
     const {
       cartItems,
       department,
@@ -96,17 +97,17 @@ const result = await prisma.$transaction(
   const itemsData = cartItems.map((item: CartItem) => {
     const product = products.find((p) => p.id === item.id)!;
 
-    if (product.stock < item.cantidad) {
+    if (product.stock < item.quantity) {
       throw new Error(
         `Stock insuficiente para ${product.name}`
       );
     }
 
-    totalAmount += product.price * item.cantidad;
+    totalAmount += product.price * item.quantity;
 
     return {
       productId: product.id,
-      quantity: item.cantidad,
+      quantity: item.quantity,
       price: product.price,
     };
   });

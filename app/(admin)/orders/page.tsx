@@ -46,7 +46,6 @@ export default function OrdersPage() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
 
-
   useEffect(() => {
     const loadOrders = async () => {
       try {
@@ -140,7 +139,12 @@ export default function OrdersPage() {
                 </td>
 
                 <td className="p-2 sm:p-3 border text-center whitespace-nowrap">
-                  ${order.totalAmount.toFixed(2)}
+                  {/* suma los precios de acuerdo a la cantidad de cada producto */}
+                  ${" "}
+                  {order.items.reduce(
+                    (acc, item) => acc + item.price * item.quantity,
+                    0,
+                  )}
                 </td>
 
                 <td className="p-2 sm:p-3 border text-center">
@@ -194,6 +198,12 @@ function OrderModal({
 
     onUpdateStatus(order.id, newStatus);
   };
+
+  let total = 0;
+
+  order.items.forEach((item) => {
+    total += Number(item.price) * Number(item.quantity);
+  });
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4">
@@ -277,20 +287,22 @@ function OrderModal({
                 <p className="font-semibold">{item.product.name}</p>
                 <p className="text-gray-600">Cantidad: {item.quantity}</p>
               </div>
-              <p className="font-semibold">
-                ${(item.price * item.quantity).toFixed(2)}
-              </p>
+              <p className="font-semibold">${item.price * item.quantity}</p>
             </div>
           ))}
         </div>
 
-        {/* Total */}
+        {/*  suma total de todos los precios de acuerdo a la cantidad de cada producto */}
         <div className="mb-4">
           <h3 className="font-pt-serif font-semibold text-[#36302A] text-sm sm:text-base">
             Total:
           </h3>
           <p className="text-[#36302A] text-lg sm:text-xl font-pt-serif">
-            ${order.totalAmount}
+            ${" "}
+            {order.items.reduce(
+              (acc, item) => acc + item.price * item.quantity,
+              0,
+            )}
           </p>
         </div>
 
@@ -321,9 +333,6 @@ function OrderModal({
           >
             <option value="PENDING">Pendiente</option>
             <option value="PAID">Pagado</option>
-            <option value="SHIPPED">Enviado</option>
-            <option value="DELIVERED">Entregado</option>
-            <option value="CANCELED">Cancelado</option>
           </select>
 
           <button

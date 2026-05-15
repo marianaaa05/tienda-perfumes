@@ -11,7 +11,6 @@ export default function SalesPage() {
     monthOrders: number;
     completed: number;
     pending: number;
-    canceled: number;
   }
   const [loading, setLoading] = useState(true);
 
@@ -50,10 +49,9 @@ export default function SalesPage() {
       <h1 className="text-3xl text-[#36302A] font-marcellus mt-12">
         Órdenes por estado
       </h1>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-pt-serif text-xl text-[#36302A]">
-        <Card title="Completadas ✅" value={stats.completed} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 font-pt-serif text-xl text-[#36302A]">
         <Card title="Pendientes ⏳" value={stats.pending} />
-        <Card title="Canceladas ❌" value={stats.canceled} />
+        <Card title="Completadas ✅" value={stats.completed} />
       </div>
     </div>
   );
