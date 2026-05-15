@@ -87,6 +87,9 @@ export default function MisPedidos() {
   const statusDic = {
     PENDING: "Pendiente",
     PAID: "Pagado",
+    SHIPPED: "Enviado",
+    DELIVERED: "Entregado",
+    CANCELED: "Cancelado",
   };
 
   // ELIMINAR PRODUCTO DE PEDIDO

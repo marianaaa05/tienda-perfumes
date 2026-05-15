@@ -140,7 +140,7 @@ export default function CartPage() {
     setCart((prev) =>
       prev!
         .map((p) => (p.id === id ? { ...p, cantidad: p.cantidad - 1 } : p))
-        .filter((p) => p.cantidad > 0),
+        .filter((p) => p.cantidad  > 0),
     );
   const removeFromCart = (id: number) =>
     setCart((prev) => prev!.filter((p) => p.id !== id));
@@ -290,9 +290,11 @@ export default function CartPage() {
           );
         })}
       </div>
-
+      
+      {/* total precios de los productos en el carrito */}
       <div className="mt-8 bg-[#574C3F] text-white font-pt-serif px-8 py-4 rounded-full shadow-md text-xl">
-        Total: ${total.toLocaleString("es-CO")}
+        Total: 
+        ${total.toLocaleString("es-CO")}
       </div>
       <Link href="/">
         <button className="mt-6 bg-[#36302A] text-white font-pt-serif px-8 py-3 rounded-full hover:bg-[#4a4035] transition">
