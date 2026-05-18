@@ -42,6 +42,25 @@ export default function ProductsPage() {
     fetchData();
   }, []);
 
+  const handleDelete = async (productId: number, productName: string) => {
+    const confirmed = confirm(
+      `¿Estás seguro de que quieres eliminar "${productName}"?\nEl producto dejará de mostrarse en la tienda.`,
+    );
+    if (!confirmed) return;
+
+    const res = await fetch(`/api/products/${productId}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      loadProducts();
+      alert("Producto eliminado exitosamente");
+    } else {
+      const data = await res.json();
+      alert(data.error || "Error al eliminar el producto");
+    }
+  };
+
   return (
     <div className="p-4 sm:p-6 bg-[#F6F3EC] min-h-screen">
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
@@ -105,17 +124,28 @@ export default function ProductsPage() {
                     {p.isActive ? "Activo" : "Inactivo"}
                   </span>
                 </td>
+                {/* botones responsivos */}
+                <td className="p-2">
+                  <div className="flex flex-col sm:flex-row justify-center gap-2">
+                    <button
+                      onClick={() => {
+                        setEditingProduct({ ...p });
+                        setShowForm(true);
+                      }}
+                      className="bg-blue-400 text-white px-3 py-1 rounded hover:bg-blue-500"
+                    >
+                      Editar
+                    </button>
 
-                <td className="p-2 flex justify-center gap-2">
-                  <button
-                    onClick={() => {
-                      setEditingProduct({ ...p });
-                      setShowForm(true);
-                    }}
-                    className="bg-blue-400 text-white px-3 py-1 rounded hover:bg-blue-500"
-                  >
-                    Editar
-                  </button>
+                    <button
+                      onClick={() => {
+                        handleDelete(p.id, p.name);
+                      }}
+                      className="bg-red-400 text-white px-3 py-1 rounded hover:bg-red-500"
+                    >
+                      Eliminar
+                    </button>
+                  </div>
                 </td>
               </tr>
             ))}
@@ -162,6 +192,14 @@ export default function ProductsPage() {
                 className="flex-1 bg-blue-400 text-white py-2 rounded hover:bg-blue-500"
               >
                 Editar
+              </button>
+              <button
+                onClick={() => {
+                  handleDelete(p.id, p.name);
+                }}
+                className="flex-1 bg-red-400 text-white py-2 rounded hover:bg-red-500"
+              >
+                Eliminar
               </button>
             </div>
           </div>

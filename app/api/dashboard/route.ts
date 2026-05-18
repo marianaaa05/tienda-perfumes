@@ -15,6 +15,7 @@ export async function GET() {
 
     const totalSales = await prisma.order.aggregate({
       _sum: { totalAmount: true },
+      where: { status: { not: "CANCELED" } },
     });
 
     return NextResponse.json({
@@ -32,9 +33,6 @@ export async function GET() {
   }
 }
 
-
-// import { NextResponse } from "next/server";
-// import { prisma } from "@/lib/prisma";
 
 export async function POST(req: Request) {
   try {

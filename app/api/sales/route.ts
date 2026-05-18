@@ -8,33 +8,36 @@ export async function GET() {
     const startOfDay = new Date(
       now.getFullYear(),
       now.getMonth(),
-      now.getDate()
+      now.getDate(),
     );
 
     const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
     const orders = await prisma.order.findMany();
 
-    const totalRevenue = orders.reduce(
-      (sum, order) => sum + Number(order.totalAmount),
-      0
+    const validOrders = await prisma.order.findMany({
+      where: { status: { not: "CANCELED" } },
+    });
+
+    const totalRevenue = validOrders.reduce(
+      (sum, o) => sum + Number(o.totalAmount),
+      0,
     );
 
-    const todayOrders = orders.filter(
-      (o) => o.createdAt >= startOfDay
+    // Usar validOrders en todas las métricas
+    const todayOrders = validOrders.filter(
+      (o) => o.createdAt >= startOfDay,
     ).length;
-
-    const monthOrders = orders.filter(
-      (o) => o.createdAt >= startOfMonth
+    const monthOrders = validOrders.filter(
+      (o) => o.createdAt >= startOfMonth,
     ).length;
-
-    const completed = orders.filter((o) => o.status === "PAID").length;
-    const pending = orders.filter((o) => o.status === "PENDING").length;
-    const canceled = orders.filter((o) => o.status === "CANCELED").length;
+    const completed = validOrders.filter((o) => o.status === "PAID").length;
+    const pending = validOrders.filter((o) => o.status === "PENDING").length;
+    const canceled = orders.filter((o) => o.status === "CANCELED").length; // este sí usa orders completo
 
     return NextResponse.json({
       totalRevenue,
-      totalOrders: orders.length,
+      totalOrders: validOrders.length, 
       todayOrders,
       monthOrders,
       completed,
@@ -45,7 +48,7 @@ export async function GET() {
     console.error(error);
     return NextResponse.json(
       { error: "Error al obtener estadísticas" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

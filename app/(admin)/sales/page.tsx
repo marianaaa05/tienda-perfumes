@@ -41,6 +41,8 @@ export default function SalesPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6 font-pt-serif text-xl text-[#36302A]">
         <Card title="Ingresos Totales 💰" value={stats.totalRevenue} />
+        {/* omitir ordenes cancelada de total ordenes */}
+        
         <Card title="Total Órdenes 📦" value={stats.totalOrders} />
         <Card title="Órdenes Hoy 📅" value={stats.todayOrders} />
         <Card title="Órdenes Mes 🗓️" value={stats.monthOrders} />

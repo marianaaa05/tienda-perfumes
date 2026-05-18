@@ -6,7 +6,7 @@ export async function PUT(
   context: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { id } = await context.params;     // ✅ FIX: params es Promise
+    const { id } = await context.params;     
     const productId = Number(id);
 
     const body = await req.json();
@@ -28,4 +28,33 @@ export async function PUT(
   }
 }
 
+
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string }> }
+) {
+  const { id } = await context.params;
+  const productId = Number(id);
+
+  if (isNaN(productId)) {
+    return NextResponse.json({ error: "ID inválido" }, { status: 400 });
+  }
+
+  const product = await prisma.product.findUnique({ where: { id: productId } });
+
+  if (!product) {
+    return NextResponse.json({ error: "Producto no encontrado" }, { status: 404 });
+  }
+
+  await prisma.$transaction([
+    prisma.orderItem.deleteMany({
+      where: { productId },
+    }),
+    prisma.product.delete({
+      where: { id: productId },
+    }),
+  ]);
+
+  return NextResponse.json({ ok: true, message: "Producto eliminado" });
+}
 
